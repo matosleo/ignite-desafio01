@@ -80,5 +80,27 @@ export const routes = [
 
       return res.writeHead(204).end()
     }
+  },
+  {
+    method: 'PATCH',
+    path: buildRoutePath('/tasks/:id/complete'),
+    handler: (req, res) => {
+
+      const { id } = req.params
+
+      const foundedTask = database.findById('tasks', id)
+
+      if (!Object.keys(foundedTask).length) {
+        return res.writeHead(404).end()
+      }
+
+      database.update('tasks', id, {
+        ...foundedTask,
+        completed_at: foundedTask.completed_at === null ? new Date().toISOString() : null,
+        updated_at: new Date().toISOString()
+      })
+
+      return res.writeHead(204).end()
+    }
   }
 ]
